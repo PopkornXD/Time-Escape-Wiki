@@ -29,3 +29,8 @@ npm-debug.log*
 # Database
 *.db
 *.sqlite
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
