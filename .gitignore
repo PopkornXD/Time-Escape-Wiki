@@ -35,3 +35,9 @@ npm-debug.log*
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# Vite cache
+.vite/
+
+# User uploads
+static/uploads/

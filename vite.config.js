@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
 		plugins: [sveltekit()],
 		define: {
 			'process.env.DB_HOST': JSON.stringify(env.DB_HOST),
+			'process.env.DB_PORT': JSON.stringify(env.DB_PORT),
 			'process.env.DB_USER': JSON.stringify(env.DB_USER),
 			'process.env.DB_PASSWORD': JSON.stringify(env.DB_PASSWORD),
 			'process.env.DB_NAME': JSON.stringify(env.DB_NAME),
