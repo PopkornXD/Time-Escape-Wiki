@@ -8,6 +8,7 @@ body {
 	background-image: url("/uploads/Background.png");
 	background-repeat: no-repeat;
 	background-attachment: fixed;
+	background-size: cover;
 	font-family: Helvetica, Arial, sans-serif;
 }
 
