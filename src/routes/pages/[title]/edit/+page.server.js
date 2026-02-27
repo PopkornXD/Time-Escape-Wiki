@@ -2,6 +2,13 @@ import { redirect, fail } from '@sveltejs/kit';
 import pool from '$lib/db.js';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Get the project root directory (go up from routes/pages/[title]/edit to project root)
+const projectRoot = path.resolve(__dirname, '..', '..', '..', '..');
 
 export async function load({ params, locals }) {
 	if (!locals.user || !locals.user.is_admin) {
@@ -49,25 +56,40 @@ export const actions = {
 		}
 		
 		const newImagePaths = [];
-		const uploadsDir = path.join(process.cwd(), 'static', 'uploads');
+		const uploadsDir = path.join(projectRoot, 'static', 'uploads');
+		
+		// Log for debugging
+		console.log('Upload directory:', uploadsDir);
 		
 		if (!fs.existsSync(uploadsDir)) {
-			fs.mkdirSync(uploadsDir, { recursive: true });
+			try {
+				fs.mkdirSync(uploadsDir, { recursive: true });
+				console.log('Created uploads directory:', uploadsDir);
+			} catch (err) {
+				console.error('Failed to create uploads directory:', err);
+				return fail(500, { error: 'Failed to create uploads directory' });
+			}
 		}
 		
 		for (const file of imageFiles) {
 			if (!file || file.size === 0) continue;
 			
-			const timestamp = Date.now();
-			const randomStr = Math.random().toString(36).substring(2, 8);
-			const ext = path.extname(file.name);
-			const filename = `${timestamp}-${randomStr}${ext}`;
-			const filepath = path.join(uploadsDir, filename);
-			
-			const buffer = Buffer.from(await file.arrayBuffer());
-			fs.writeFileSync(filepath, buffer);
-			
-			newImagePaths.push(`/uploads/${filename}`);
+			try {
+				const timestamp = Date.now();
+				const randomStr = Math.random().toString(36).substring(2, 8);
+				const ext = path.extname(file.name);
+				const filename = `${timestamp}-${randomStr}${ext}`;
+				const filepath = path.join(uploadsDir, filename);
+				
+				const buffer = Buffer.from(await file.arrayBuffer());
+				fs.writeFileSync(filepath, buffer);
+				
+				newImagePaths.push(`/uploads/${filename}`);
+				console.log('Uploaded image:', filename);
+			} catch (err) {
+				console.error('Failed to upload image:', err);
+				// Continue with other images even if one fails
+			}
 		}
 		
 		let conn;
@@ -119,12 +141,12 @@ export const actions = {
 			if (pages.length > 0 && pages[0].images) {
 				try {
 					const images = JSON.parse(pages[0].images);
-					const uploadsDir = path.join(process.cwd(), 'static');
 					
 					for (const imagePath of images) {
-						const filepath = path.join(uploadsDir, imagePath);
+						const filepath = path.join(projectRoot, 'static', imagePath);
 						if (fs.existsSync(filepath)) {
 							fs.unlinkSync(filepath);
+							console.log('Deleted image:', filepath);
 						}
 					}
 				} catch (e) {

@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const projectRoot = path.resolve(__dirname, '..', '..', '..');
+
 export async function load({ locals }) {
 	if (!locals.user || !locals.user.is_admin) {
 		throw redirect(303, '/');
@@ -34,25 +36,38 @@ export const actions = {
 		}
 		
 		const imagePaths = [];
-		const uploadsDir = path.join(process.cwd(), 'static', 'uploads');
+		const uploadsDir = path.join(projectRoot, 'static', 'uploads');
+		
+		console.log('Upload directory:', uploadsDir);
 		
 		if (!fs.existsSync(uploadsDir)) {
-			fs.mkdirSync(uploadsDir, { recursive: true });
+			try {
+				fs.mkdirSync(uploadsDir, { recursive: true });
+				console.log('Created uploads directory:', uploadsDir);
+			} catch (err) {
+				console.error('Failed to create uploads directory:', err);
+				return fail(500, { error: 'Failed to create uploads directory' });
+			}
 		}
 		
 		for (const file of imageFiles) {
 			if (!file || file.size === 0) continue;
 			
-			const timestamp = Date.now();
-			const randomStr = Math.random().toString(36).substring(2, 8);
-			const ext = path.extname(file.name);
-			const filename = `${timestamp}-${randomStr}${ext}`;
-			const filepath = path.join(uploadsDir, filename);
-			
-			const buffer = Buffer.from(await file.arrayBuffer());
-			fs.writeFileSync(filepath, buffer);
-			
-			imagePaths.push(`/uploads/${filename}`);
+			try {
+				const timestamp = Date.now();
+				const randomStr = Math.random().toString(36).substring(2, 8);
+				const ext = path.extname(file.name);
+				const filename = `${timestamp}-${randomStr}${ext}`;
+				const filepath = path.join(uploadsDir, filename);
+				
+				const buffer = Buffer.from(await file.arrayBuffer());
+				fs.writeFileSync(filepath, buffer);
+				
+				imagePaths.push(`/uploads/${filename}`);
+				console.log('Uploaded image:', filename);
+			} catch (err) {
+				console.error('Failed to upload image:', err);
+			}
 		}
 		
 		let conn;
