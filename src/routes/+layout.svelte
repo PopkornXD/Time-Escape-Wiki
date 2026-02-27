@@ -20,6 +20,17 @@
 
 <slot />
 
+<footer class="footer">
+	<div class="footer-content">
+		<p>&copy; {new Date().getFullYear()} Time Escape Wiki. All rights reserved.</p>
+		<div class="footer-links">
+			<a href="/privacy_policy">Privacy Policy</a>
+			<span class="separator">•</span>
+			<a href="mailto:iver.espolin.johnson@gmail.com">Contact</a>
+		</div>
+	</div>
+</footer>
+
 <style>
 	.header {
 		position: sticky;
@@ -90,6 +101,48 @@
 
 	a {
 		text-decoration: none;
+	}
+
+	.footer {
+		background-color: #2c3e50;
+		color: #ecf0f1;
+		padding: 20px;
+		margin-top: 40px;
+		text-align: center;
+		width: 100vw;
+	}
+
+	.footer-content {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.footer-content p {
+		margin: 0 0 10px 0;
+		font-size: 14px;
+	}
+
+	.footer-links {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		font-size: 14px;
+	}
+
+	.footer-links a {
+		color: #3498db;
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+
+	.footer-links a:hover {
+		color: #5dade2;
+		text-decoration: underline;
+	}
+
+	.separator {
+		color: #7f8c8d;
 	}
 </style>
 
