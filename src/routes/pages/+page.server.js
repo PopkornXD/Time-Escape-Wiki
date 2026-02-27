@@ -17,6 +17,6 @@ export async function load({ locals }) {
 			user: locals.user || null
 		};
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }

@@ -17,7 +17,7 @@ export async function createUser(username, password, email) {
 		console.error(err);
 		return { success: false, error: err.message };
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }
 
@@ -54,7 +54,7 @@ export async function verifyUser(username, password) {
 		console.error(err);
 		return { success: false, error: err.message };
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }
 
@@ -76,6 +76,6 @@ export async function getUserById(userId) {
 		console.error(err);
 		return null;
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }

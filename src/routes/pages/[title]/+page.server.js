@@ -52,7 +52,7 @@ export async function load({ params, locals }) {
 		console.error(err);
 		throw error(500, 'Failed to load page');
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }
 

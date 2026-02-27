@@ -27,7 +27,7 @@ export async function load({ params, locals }) {
 		console.error(err);
 		throw redirect(303, '/pages');
 	} finally {
-		if (conn) conn.end();
+		if (conn) conn.release();
 	}
 }
 
@@ -99,7 +99,7 @@ export const actions = {
 			console.error(err);
 			return fail(500, { error: 'Failed to update page' });
 		} finally {
-			if (conn) conn.end();
+			if (conn) conn.release();
 		}
 	},
 	
@@ -140,7 +140,7 @@ export const actions = {
 			console.error(err);
 			return fail(500, { error: 'Failed to delete page' });
 		} finally {
-			if (conn) conn.end();
+			if (conn) conn.release();
 		}
 	}
 };

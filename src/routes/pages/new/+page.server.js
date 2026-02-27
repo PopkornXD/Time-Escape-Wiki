@@ -71,7 +71,7 @@ export const actions = {
 			console.error(err);
 			return fail(500, { error: 'Failed to create page' });
 		} finally {
-			if (conn) conn.end();
+			if (conn) conn.release();
 		}
 	}
 };
